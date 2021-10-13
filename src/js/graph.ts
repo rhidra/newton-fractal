@@ -15,8 +15,8 @@ export class Graph {
     new Complex(-.5, -.86603), 
   ];
 
-  maxX = 1; minX = -1;
-  maxY = 1; minY = -1;
+  maxX = 5; minX = -5;
+  maxY = 5; minY = -5;
 
   getRealRoots(): number[] {
     return this.roots.map(r => r.real);

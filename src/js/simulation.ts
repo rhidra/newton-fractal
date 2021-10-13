@@ -55,8 +55,8 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
     // Programs/Shaders setup
     if (updateShaders) {
       updateShaders = false;
+      // The root count must be const on the scale of the renderer
       const src = frag.sourceCode.replace('$0$', graph.rootsCount);
-      console.log(src)
       prog = twgl.createProgramInfo(gl, [vert.sourceCode, src]);
     }
 
