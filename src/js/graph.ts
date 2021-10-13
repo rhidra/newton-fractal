@@ -17,4 +17,16 @@ export class Graph {
 
   maxX = 1; minX = -1;
   maxY = 1; minY = -1;
+
+  getRealRoots(): number[] {
+    return this.roots.map(r => r.real);
+  }
+
+  getImagRoots(): number[] {
+    return this.roots.map(r => r.imag);
+  }
+
+  get rootsCount() {
+    return this.roots.length;
+  }
 }

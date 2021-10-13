@@ -26,14 +26,15 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
   gl.canvas.width /= resolutionFactor(controller);
   gl.canvas.height /= resolutionFactor(controller);
 
+
+  // Programs/Shaders setup
+  const prog = twgl.createProgramInfo(gl, [vert.sourceCode, frag.sourceCode]);
+
   if (!gl.getExtension('OES_texture_float')) {
       console.error('no floating point texture support');
       return;
   }
   gl.getExtension('OES_texture_float_linear');
-
-  // Programs init
-  const prog = twgl.createProgramInfo(gl, [vert.sourceCode, frag.sourceCode]);
   
   // Vertex shader stuff
   const arrays = {position: [-1, -1, 0, 1, -1, 0, -1, 1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0]};
@@ -62,6 +63,9 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
     const uniforms = {
       [frag.uniforms.resolution.variableName]: [gl.canvas.width, gl.canvas.height],
       [frag.uniforms.limits.variableName]: [graph.minX, graph.maxX, graph.minY, graph.maxY],
+      [frag.uniforms.rootsReal.variableName]: graph.getRealRoots(),
+      [frag.uniforms.rootsImag.variableName]: graph.getImagRoots(),
+      [frag.uniforms.rootsCount.variableName]: graph.rootsCount,
     };
     
     renderToTexture(gl, prog, null, bufferInfo, uniforms);
