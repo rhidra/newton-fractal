@@ -26,10 +26,6 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
   gl.canvas.width /= resolutionFactor(controller);
   gl.canvas.height /= resolutionFactor(controller);
 
-
-  // Programs/Shaders setup
-  const prog = twgl.createProgramInfo(gl, [vert.sourceCode, frag.sourceCode]);
-
   if (!gl.getExtension('OES_texture_float')) {
       console.error('no floating point texture support');
       return;
@@ -52,7 +48,18 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
 
   controller.onChangeQuality(() => initSimulation(listener, controller));
 
+  let updateShaders = true;
+  let prog: twgl.ProgramInfo;
+
   function render(time: number) {
+    // Programs/Shaders setup
+    if (updateShaders) {
+      updateShaders = false;
+      const src = frag.sourceCode.replace('$0$', graph.rootsCount);
+      console.log(src)
+      prog = twgl.createProgramInfo(gl, [vert.sourceCode, src]);
+    }
+
     // Resize canvas and textures
     if (twgl.resizeCanvasToDisplaySize(gl.canvas as any)) {
       gl.canvas.width /= resolutionFactor(controller);
@@ -65,7 +72,6 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
       [frag.uniforms.limits.variableName]: [graph.minX, graph.maxX, graph.minY, graph.maxY],
       [frag.uniforms.rootsReal.variableName]: graph.getRealRoots(),
       [frag.uniforms.rootsImag.variableName]: graph.getImagRoots(),
-      [frag.uniforms.rootsCount.variableName]: graph.rootsCount,
     };
     
     renderToTexture(gl, prog, null, bufferInfo, uniforms);
