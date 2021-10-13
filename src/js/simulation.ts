@@ -1,6 +1,7 @@
 import * as twgl from 'twgl.js';
 import { Controller, Quality } from './controls';
 import { MouseListener } from './events';
+import { Graph } from './graph';
 
 // Load shaders
 const vert = require('../shaders/shader.vert');
@@ -37,6 +38,9 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
   // Vertex shader stuff
   const arrays = {position: [-1, -1, 0, 1, -1, 0, -1, 1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0]};
   const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
+
+  // Init graph data
+  const graph = new Graph();
   
   console.log(`resolution: ${gl.canvas.width} ${gl.canvas.height}`);
 
@@ -45,16 +49,9 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
   listener.onMouseDragStop(() => {
   });
 
-  let lastTime = Date.now() / 1000;
-  let i = 0;
-
   controller.onChangeQuality(() => initSimulation(listener, controller));
 
   function render(time: number) {
-    const now = time / 1000;
-    const dt = (now - lastTime) * 1;
-    lastTime = now;
-
     // Resize canvas and textures
     if (twgl.resizeCanvasToDisplaySize(gl.canvas as any)) {
       gl.canvas.width /= resolutionFactor(controller);
@@ -64,12 +61,11 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
     
     const uniforms = {
       [frag.uniforms.resolution.variableName]: [gl.canvas.width, gl.canvas.height],
+      [frag.uniforms.limits.variableName]: [graph.minX, graph.maxX, graph.minY, graph.maxY],
     };
     
-
     renderToTexture(gl, prog, null, bufferInfo, uniforms);
 
-    i++;
     requestAnimationFrame(render);
   }
   
