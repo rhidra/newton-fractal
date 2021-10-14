@@ -44,6 +44,7 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
   
   console.log(`resolution: ${gl.canvas.width} ${gl.canvas.height}`);
 
+  // Dragging system (graph + root dragging)
   let isDragging: false|'graph'|number = false;
   listener.onMouseDrag((point, force) => {
     if (isDragging === false) {
@@ -72,6 +73,7 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
   listener.onMouseScroll(dy => graph.zoomGraph(dy/-114));
 
   let updateShaders = true;
+  let iterations = 1;
   let prog: twgl.ProgramInfo;
 
   controller.onChangeQuality(() => initSimulation(listener, controller));
@@ -84,12 +86,17 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
     updateShaders = true;
   });
 
+  controller.onChangeIterations(() => {
+    updateShaders = true;
+  });
+
   function render(time: number) {
     // Programs/Shaders setup
     if (updateShaders) {
       updateShaders = false;
-      // The root count must be const on the scale of the renderer
-      const src = frag.sourceCode.replace('$0$', graph.rootsCount);
+      const src = frag.sourceCode
+        .replace('$0$', graph.rootsCount)
+        .replace('$1$', controller.iterations);
       prog = twgl.createProgramInfo(gl, [vert.sourceCode, src]);
     }
 

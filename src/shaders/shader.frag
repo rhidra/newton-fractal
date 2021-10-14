@@ -5,11 +5,11 @@ precision mediump float;
 uniform vec2 resolution;
 uniform vec4 limits;
 
-@const int rootsCount
+@const int ROOTS_COUNT
 uniform float rootsReal[10];
 uniform float rootsImag[10];
 
-#define ITERATIONS 10
+@const int ITERATIONS
 
 vec2 cprod(vec2 a, vec2 b) { return vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x); }
 vec2 cdivide(vec2 a, vec2 b) { return vec2(((a.x*b.x+a.y*b.y)/(b.x*b.x+b.y*b.y)),((a.y*b.x-a.x*b.y)/(b.x*b.x+b.y*b.y))); }
@@ -22,7 +22,7 @@ vec3 hsb2rgb( in vec3 c ){
 
 vec2 f(vec2 x) {
   vec2 s = vec2(1.);
-  for (int i = 0; i < rootsCount; i++) {
+  for (int i = 0; i < ROOTS_COUNT; i++) {
     s = cprod(s, x - vec2(rootsReal[i], rootsImag[i]));
   }
   return s;
@@ -30,9 +30,9 @@ vec2 f(vec2 x) {
 
 vec2 df(vec2 x) {
   vec2 s1 = vec2(0.);
-  for (int i = 0; i < rootsCount; i++) {
+  for (int i = 0; i < ROOTS_COUNT; i++) {
     vec2 s2 = vec2(1.);
-    for (int j = 0; j < rootsCount; j++) {
+    for (int j = 0; j < ROOTS_COUNT; j++) {
       vec2 t = x - vec2(rootsReal[j], rootsImag[j]);
       float mask = 1. - step(float(i) - .5, float(j)) + step(float(i) + .5, float(j));
       s2 = cprod(s2, t * mask + (1. - mask));
@@ -47,7 +47,7 @@ vec3 findRootColor(vec2 p, out float out_d) {
   float d = 100000.;
   vec3 color = vec3(0.);
 
-  for (int i = 0; i < rootsCount; i++) {
+  for (int i = 0; i < ROOTS_COUNT; i++) {
     float t = length(p - vec2(rootsReal[i], rootsImag[i]));
     if (t < d) {
       d = t;

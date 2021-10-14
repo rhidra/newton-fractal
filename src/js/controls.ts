@@ -10,9 +10,12 @@ export class Controller {
   nav;
   renderType = RenderType.NONE;
   quality = Quality.HIGH;
+  iterations = 1;
   qualityCb: (q: Quality) => void;
+  iterCb: (i: number) => void;
   addRootCb: () => void;
   removeRootCb: () => void;
+
 
   constructor() {
     this.nav = document.querySelector<HTMLElement>('nav');
@@ -37,6 +40,12 @@ export class Controller {
       .addEventListener('click', () => this.handleAddRoot());
     document.querySelector<HTMLButtonElement>('button#remove-root')
       .addEventListener('click', () => this.handleRemoveRoot());
+    
+    // Iteration buttons
+    document.querySelector<HTMLButtonElement>('button#add-iter')
+      .addEventListener('click', () => this.handleAddIter());
+    document.querySelector<HTMLButtonElement>('button#remove-iter')
+      .addEventListener('click', () => this.handleRemoveIter());
 
     // Quality
     const radiosQuality = document.querySelectorAll<HTMLInputElement>('input[type="radio"][name="quality"]');
@@ -59,21 +68,24 @@ export class Controller {
     }
   }
 
-  handleAddRoot() {
-    if (this.addRootCb) {
-      this.addRootCb();
-    }
-  }
+  handleAddRoot() { this.addRootCb ? this.addRootCb() : null; }
+  handleRemoveRoot() { this.removeRootCb ? this.removeRootCb() : null; }
 
-  handleRemoveRoot() {
-    if (this.removeRootCb) {
-      this.removeRootCb();
-    }
+  handleAddIter() { 
+    this.iterations++;
+    document.querySelector('span#iterations-number').innerHTML = `${this.iterations}`;
+    this.iterCb ? this.iterCb(this.iterations) : null; 
+  }
+  handleRemoveIter() { 
+    this.iterations = this.iterations === 1 ? this.iterations : this.iterations - 1;
+    document.querySelector('span#iterations-number').innerHTML = `${this.iterations}`;
+    this.iterCb ? this.iterCb(this.iterations) : null;
   }
 
   onChangeQuality(f: any) { this.qualityCb = f; }
   onAddRoot(f: any) { this.addRootCb = f; }
   onRemoveRoot(f: any) { this.removeRootCb = f; }
+  onChangeIterations(f: any) { this.iterCb = f; }
 }
 
 export function initControlPanel() {
