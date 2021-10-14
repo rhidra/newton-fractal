@@ -1,4 +1,5 @@
 import { Complex } from "./complex";
+import { Vector2 } from "./utils";
 
 /**
  * Graph
@@ -17,6 +18,13 @@ export class Graph {
 
   maxX = 5; minX = -5;
   maxY = 5; minY = -5;
+
+  moveGraphAlong(vec: Vector2) {
+    this.maxX += -vec[0] * (this.maxX - this.minX);
+    this.minX += -vec[0] * (this.maxX - this.minX);
+    this.maxY += -vec[1] * (this.maxY - this.minY);
+    this.minY += -vec[1] * (this.maxY - this.minY);
+  }
 
   getRealRoots(): number[] {
     return this.roots.map(r => r.real);
