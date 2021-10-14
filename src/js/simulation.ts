@@ -38,6 +38,7 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
 
   // Init graph data
   const graph = new Graph();
+  graph.adaptDimensions(gl.canvas.width, gl.canvas.height);
   
   console.log(`resolution: ${gl.canvas.width} ${gl.canvas.height}`);
 
@@ -65,6 +66,7 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
     if (twgl.resizeCanvasToDisplaySize(gl.canvas as any)) {
       gl.canvas.width /= resolutionFactor(controller);
       gl.canvas.height /= resolutionFactor(controller);    
+      graph.adaptDimensions(gl.canvas.width, gl.canvas.height);
     }
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     

@@ -9,7 +9,7 @@ uniform vec4 limits;
 uniform float rootsReal[10];
 uniform float rootsImag[10];
 
-#define ITERATIONS 20
+#define ITERATIONS 10
 
 vec2 cprod(vec2 a, vec2 b) { return vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x); }
 vec2 cdivide(vec2 a, vec2 b) { return vec2(((a.x*b.x+a.y*b.y)/(b.x*b.x+b.y*b.y)),((a.y*b.x-a.x*b.y)/(b.x*b.x+b.y*b.y))); }
@@ -92,7 +92,7 @@ void main() {
   float d = 100000.;
   color = findRootColor(sol, d);
   // color *= d;
-  color += vec3(d/1.);
+  // color += vec3(d/1.);
 
   // Display the function
   // vec2 res = p - f(p)/df(p);
@@ -100,8 +100,8 @@ void main() {
   // color = hsb2rgb(vec3(a, length(res), 1.));
 
   // Draw axis lines
-  float axisLine = 1. - step(.008, length(p.x));
-  axisLine += 1. - step(.008, length(p.y));
+  float axisLine = 1. - step(.00005*resolution.x/(limits[1]-limits[0]), length(p.x));
+  axisLine += 1. - step(.00005*resolution.y/(limits[3]-limits[2]), length(p.y));
   color = color * (1. - axisLine) + vec3(1., 1., 1.) * axisLine;
 
   gl_FragColor = vec4(color, 1.);
