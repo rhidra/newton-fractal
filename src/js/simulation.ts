@@ -20,6 +20,8 @@ function resolutionFactor(controller: Controller) {
   }[controller.quality];
 }
 
+const graph = new Graph();
+
 export function initSimulation(listener: MouseListener, controller: Controller) {
   // WebGL init
   const gl = document.querySelector<HTMLCanvasElement>("#c").getContext("webgl");
@@ -38,7 +40,6 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
   const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
 
   // Init graph data
-  const graph = new Graph();
   graph.adaptDimensions(gl.canvas.width, gl.canvas.height, resolutionFactor(controller));
   
   console.log(`resolution: ${gl.canvas.width} ${gl.canvas.height}`);
@@ -70,10 +71,18 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
   listener.onMouseDragStop(() => isDragging = false);
   listener.onMouseScroll(dy => graph.zoomGraph(dy/-114));
 
-  controller.onChangeQuality(() => initSimulation(listener, controller));
-
   let updateShaders = true;
   let prog: twgl.ProgramInfo;
+
+  controller.onChangeQuality(() => initSimulation(listener, controller));
+  controller.onAddRoot(() => {
+    graph.addRoot();
+    updateShaders = true;
+  });
+  controller.onRemoveRoot(() => {
+    graph.removeRoot();
+    updateShaders = true;
+  });
 
   function render(time: number) {
     // Programs/Shaders setup

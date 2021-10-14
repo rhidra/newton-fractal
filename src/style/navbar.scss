@@ -26,10 +26,6 @@ nav {
 
   section {
     margin-top: 1rem;
-  }
-
-  section.radio {
-    input { display: none; }
 
     p {
       color: $grey;
@@ -37,8 +33,12 @@ nav {
       margin: 0;
       margin-bottom: 1rem;
     }
+  }
 
-    label { 
+  section {
+    input { display: none; }
+
+    label, button { 
       cursor: pointer;
       position: relative;
       display: block; 
@@ -47,9 +47,15 @@ nav {
       padding-left: 2rem;
       font-size: 1rem;
       color: $white;
+      background: none;
+      outline: none;
+      border: none;
       transition: color linear 150ms, background linear 150ms;
       &:hover {
         background-color: rgba(#2d3b49, .6);
+      }
+      &:active {
+        background-color: rgba(#2d3b49, 1);
       }
       &:before {
         content: "◆";

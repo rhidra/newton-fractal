@@ -61,6 +61,21 @@ export class Graph {
     rootEl.style.left = `${x}px`;
   }
 
+  // Add a new root on the circle of the farthest root
+  addRoot() {
+    const radius = this.roots.reduce((d, root) => Math.max(d, root.radius), -1);
+    this.roots.push(Complex.fromAngle(radius, Math.random() * 2*3.1415));
+    this.initRootComponents();
+  }
+
+  removeRoot() {
+    if (this.rootsCount === 1) {
+      return;
+    }
+    this.roots.pop();
+    this.initRootComponents();
+  }
+
   // Adapt the graph limits to the screen resolution
   adaptDimensions(width: number, height: number, resolutionFactor: number) {
     if (this.prevWidth === -1) {

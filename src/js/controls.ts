@@ -1,6 +1,5 @@
 export enum RenderType {
-  NONE="none", VELOCITY="velocity",
-  MOTION_BLUR="blur", PIXELIZE="pixelize", GRID_FLOW="grid", SQUARE_FLOW="square",
+  NONE="none",
 }
 
 export enum Quality {
@@ -11,7 +10,9 @@ export class Controller {
   nav;
   renderType = RenderType.NONE;
   quality = Quality.HIGH;
-  qualityCb: (q: Quality) => void
+  qualityCb: (q: Quality) => void;
+  addRootCb: () => void;
+  removeRootCb: () => void;
 
   constructor() {
     this.nav = document.querySelector<HTMLElement>('nav');
@@ -23,13 +24,19 @@ export class Controller {
       .addEventListener('click', () => this.nav.classList.add('visible'));
 
     // Post processing effect
-    const radiosRenderType = document.querySelectorAll<HTMLInputElement>('input[type="radio"][name="renderType"]');
-    radiosRenderType.forEach(radio => {
-      radio.addEventListener('change', (e: any) => this.handleChangeRenderType(e.target.value));
-      if (radio.checked) {
-        this.handleChangeRenderType(radio.value as RenderType);
-      }
-    });
+    // const radiosRenderType = document.querySelectorAll<HTMLInputElement>('input[type="radio"][name="renderType"]');
+    // radiosRenderType.forEach(radio => {
+    //   radio.addEventListener('change', (e: any) => this.handleChangeRenderType(e.target.value));
+    //   if (radio.checked) {
+    //     this.handleChangeRenderType(radio.value as RenderType);
+    //   }
+    // });
+
+    // Roots buttons
+    document.querySelector<HTMLButtonElement>('button#add-root')
+      .addEventListener('click', () => this.handleAddRoot());
+    document.querySelector<HTMLButtonElement>('button#remove-root')
+      .addEventListener('click', () => this.handleRemoveRoot());
 
     // Quality
     const radiosQuality = document.querySelectorAll<HTMLInputElement>('input[type="radio"][name="quality"]');
@@ -52,9 +59,21 @@ export class Controller {
     }
   }
 
-  onChangeQuality(f: any) {
-    this.qualityCb = f;
+  handleAddRoot() {
+    if (this.addRootCb) {
+      this.addRootCb();
+    }
   }
+
+  handleRemoveRoot() {
+    if (this.removeRootCb) {
+      this.removeRootCb();
+    }
+  }
+
+  onChangeQuality(f: any) { this.qualityCb = f; }
+  onAddRoot(f: any) { this.addRootCb = f; }
+  onRemoveRoot(f: any) { this.removeRootCb = f; }
 }
 
 export function initControlPanel() {
