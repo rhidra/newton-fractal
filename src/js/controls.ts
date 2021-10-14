@@ -10,7 +10,7 @@ export enum Quality {
 export class Controller {
   nav;
   renderType = RenderType.NONE;
-  quality = Quality.MEDIUM;
+  quality = Quality.HIGH;
   qualityCb: (q: Quality) => void
 
   constructor() {
