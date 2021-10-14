@@ -73,20 +73,16 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
   listener.onMouseScroll(dy => graph.zoomGraph(dy/-114));
 
   let updateShaders = true;
-  let iterations = 1;
   let prog: twgl.ProgramInfo;
 
   controller.onChangeQuality(() => initSimulation(listener, controller));
+  controller.onChangeIterations(() => updateShaders = true);
   controller.onAddRoot(() => {
     graph.addRoot();
     updateShaders = true;
   });
   controller.onRemoveRoot(() => {
     graph.removeRoot();
-    updateShaders = true;
-  });
-
-  controller.onChangeIterations(() => {
     updateShaders = true;
   });
 
