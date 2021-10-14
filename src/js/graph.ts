@@ -39,19 +39,39 @@ export class Graph {
       this.minX += dl;
       this.maxX -= dl;
     } else {
-      const Lx = this.maxX - this.minX;
-      const lx = Lx * width / this.prevWidth;
-      this.minX += (Lx - lx) / 2;
-      this.maxX -= (Lx - lx) / 2;
-
-      const Ly = this.maxY - this.minY;
-      const ly = Ly * height / this.prevHeight;
-      this.minY += (Ly - ly) / 2;
-      this.maxY -= (Ly - ly) / 2;
-
+      this.adaptXLimits((this.maxX - this.minX) * width / this.prevWidth);
+      this.adaptYLimits((this.maxY - this.minY) * height / this.prevHeight);
       this.prevWidth = width;
       this.prevHeight = height;
     }
+  }
+
+  // Change limits to be the new length
+  adaptXLimits(newLength: number) {
+    const oldLength = this.maxX - this.minX;
+    this.minX += (oldLength - newLength) / 2;
+    this.maxX -= (oldLength - newLength) / 2;
+  }
+
+  adaptYLimits(newLength: number) {
+    const oldLength = this.maxY - this.minY;
+    this.minY += (oldLength - newLength) / 2;
+    this.maxY -= (oldLength - newLength) / 2;
+  }
+
+  // Positive to zoom, negative to unzoom
+  zoomGraph(scale: number) {
+    let factor: number;
+    if (scale >= 1) {
+      factor = -.1 * scale + 1;
+    } else if (scale <= -1) {
+      factor = -.1 * scale + 1;
+    } else {
+      return;
+    }
+    this.adaptXLimits((this.maxX - this.minX) * factor);
+    this.adaptYLimits((this.maxY - this.minY) * factor);
+    console.log(factor, this.minX, this.maxX)
   }
 
   getRealRoots(): number[] {

@@ -100,8 +100,8 @@ void main() {
   // color = hsb2rgb(vec3(a, length(res), 1.));
 
   // Draw axis lines
-  float axisLine = 1. - step(.00005*resolution.x/(limits[1]-limits[0]), length(p.x));
-  axisLine += 1. - step(.00005*resolution.y/(limits[3]-limits[2]), length(p.y));
+  float axisLine = 1. - step(.000001*resolution.x*(limits[1]-limits[0]), length(p.x));
+  axisLine += 1. - step(.000001*resolution.y*(limits[3]-limits[2]), length(p.y));
   color = color * (1. - axisLine) + vec3(1., 1., 1.) * axisLine;
 
   gl_FragColor = vec4(color, 1.);

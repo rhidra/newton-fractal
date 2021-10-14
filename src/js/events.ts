@@ -6,6 +6,7 @@ export class MouseListener {
   canvas;
 
   mouseDragCb: (point: Vector2, force: Vector2) => void;
+  mouseScrollCb: (dy: number) => void;
   dragStopCb: () => void;
 
   constructor() {
@@ -33,6 +34,9 @@ export class MouseListener {
       this.handleMouseMove(e.touches[0].clientX, e.touches[0].clientY);
     });
     document.addEventListener('mousemove', e => this.handleMouseMove(e.clientX, e.clientY));
+
+    // Mouse scroll
+    document.addEventListener('wheel', e => this.handleMouseScroll(e.deltaY));
 
     if (false) {
       const startTime = Date.now() / 1000;
@@ -85,12 +89,22 @@ export class MouseListener {
     }
   }
 
+  handleMouseScroll(dy: number) {
+    if (this.mouseScrollCb) {
+      this.mouseScrollCb(dy);
+    }
+  }
+
   onMouseDrag(fn: (point: Vector2, force: Vector2) => void) {
     this.mouseDragCb = fn;
   }
 
   onMouseDragStop(fn: () => void) {
     this.dragStopCb = fn;
+  }
+  
+  onMouseScroll(fn: (dy: number) => void) {
+    this.mouseScrollCb = fn;
   }
 
   step(time: number, dt: number) {

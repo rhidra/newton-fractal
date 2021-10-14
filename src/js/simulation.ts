@@ -42,11 +42,8 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
   
   console.log(`resolution: ${gl.canvas.width} ${gl.canvas.height}`);
 
-  listener.onMouseDrag((point, force) => {
-    graph.moveGraphAlong(force);
-  });
-  listener.onMouseDragStop(() => {
-  });
+  listener.onMouseDrag((point, force) => graph.moveGraphAlong(force));
+  listener.onMouseScroll(dy => graph.zoomGraph(dy/-114));
 
   controller.onChangeQuality(() => initSimulation(listener, controller));
 
