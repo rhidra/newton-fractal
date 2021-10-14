@@ -19,7 +19,26 @@ export class Graph {
   maxX = 2; minX = -2;
   maxY = 2; minY = -2;
 
-  prevWidth = -1; prevHeight = -1;
+  prevWidth = -1; prevHeight = -1; resolutionFactor = -1;
+
+  initRootComponents() {
+    if (this.prevWidth === -1 || this.prevHeight === -1 || this.resolutionFactor === -1) {
+      return;
+    }
+
+    const body = document.querySelector('body');
+    body.querySelectorAll('.root').forEach(el => el.remove());
+    
+    this.roots.forEach((r, i) => {
+      const x = (r.x - this.minX) / (this.maxX - this.minX) * this.prevWidth * this.resolutionFactor;
+      const y = (r.y - this.maxY) / (this.minY - this.maxY) * this.prevHeight * this.resolutionFactor;
+      const el = document.createElement('div');
+      el.className = 'root';
+      el.style.top = `${y}px`;
+      el.style.left = `${x}px`;
+      body.appendChild(el);
+    });
+  }
 
   // Moves the graph limits according to a direction vector, with components [0,1]
   moveGraphAlong(dir: Vector2) {
@@ -27,10 +46,11 @@ export class Graph {
     this.minX -= dir[0] * (this.maxX - this.minX);
     this.maxY -= dir[1] * (this.maxY - this.minY);
     this.minY -= dir[1] * (this.maxY - this.minY);
+    this.initRootComponents();
   }
 
   // Adapt the graph limits to the screen resolution
-  adaptDimensions(width: number, height: number) {
+  adaptDimensions(width: number, height: number, resolutionFactor: number) {
     if (this.prevWidth === -1) {
       this.prevWidth = width;
       this.prevHeight = height;
@@ -44,6 +64,8 @@ export class Graph {
       this.prevWidth = width;
       this.prevHeight = height;
     }
+    this.resolutionFactor = resolutionFactor;
+    this.initRootComponents();
   }
 
   // Change limits to be the new length
@@ -71,7 +93,7 @@ export class Graph {
     }
     this.adaptXLimits((this.maxX - this.minX) * factor);
     this.adaptYLimits((this.maxY - this.minY) * factor);
-    console.log(factor, this.minX, this.maxX)
+    this.initRootComponents();
   }
 
   getRealRoots(): number[] {
