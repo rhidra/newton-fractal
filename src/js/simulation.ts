@@ -2,6 +2,7 @@ import * as twgl from 'twgl.js';
 import { Controller, Quality } from './controls';
 import { MouseListener } from './events';
 import { Graph } from './graph';
+import { distance } from './utils';
 
 // Load shaders
 const vert = require('../shaders/shader.vert');
@@ -42,7 +43,31 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
   
   console.log(`resolution: ${gl.canvas.width} ${gl.canvas.height}`);
 
-  listener.onMouseDrag((point, force) => graph.moveGraphAlong(force));
+  let isDragging: false|'graph'|number = false;
+  listener.onMouseDrag((point, force) => {
+    if (isDragging === false) {
+      // Find what the user is dragging (a root or the graph)
+      const h = gl.canvas.height * resolutionFactor(controller);
+      point = [point[0] * h, (1 - point[1]) * h];
+      for (let i = 0; i < graph.rootsCount; ++i) {
+        if (distance(point, graph.convertGraph2Page(graph.roots[i].vec)) < 40) {
+          isDragging = i;
+          break;
+        }
+      }
+
+      if (isDragging === false) {
+        isDragging = 'graph';
+      }
+    }
+
+    if (isDragging === 'graph') {
+      graph.moveGraphAlong(force);
+    } else {
+      graph.moveRoot(isDragging, force);
+    }
+  });
+  listener.onMouseDragStop(() => isDragging = false);
   listener.onMouseScroll(dy => graph.zoomGraph(dy/-114));
 
   controller.onChangeQuality(() => initSimulation(listener, controller));

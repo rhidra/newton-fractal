@@ -29,11 +29,10 @@ export class Graph {
     const body = document.querySelector('body');
     body.querySelectorAll('.root').forEach(el => el.remove());
     
-    this.roots.forEach((r, i) => {
-      const x = (r.x - this.minX) / (this.maxX - this.minX) * this.prevWidth * this.resolutionFactor;
-      const y = (r.y - this.maxY) / (this.minY - this.maxY) * this.prevHeight * this.resolutionFactor;
+    this.roots.forEach((r, idx) => {
+      const [x, y] = this.convertGraph2Page(r.vec);
       const el = document.createElement('div');
-      el.className = 'root';
+      el.className = `root root-${idx}`;
       el.style.top = `${y}px`;
       el.style.left = `${x}px`;
       body.appendChild(el);
@@ -47,6 +46,19 @@ export class Graph {
     this.maxY -= dir[1] * (this.maxY - this.minY);
     this.minY -= dir[1] * (this.maxY - this.minY);
     this.initRootComponents();
+  }
+
+  // Move a root along a direction vector in page space [0, 1]
+  moveRoot(rootIdx: number, dir: Vector2) {
+    if (rootIdx < 0 || rootIdx >= this.rootsCount) {
+      return;
+    }
+    this.roots[rootIdx].real += dir[0] * (this.maxX - this.minX);
+    this.roots[rootIdx].imag += dir[1] * (this.maxY - this.minY);
+    const rootEl = document.querySelector(`.root.root-${rootIdx}`) as HTMLDivElement;
+    const [x, y] = this.convertGraph2Page(this.roots[rootIdx].vec);
+    rootEl.style.top = `${y}px`;
+    rootEl.style.left = `${x}px`;
   }
 
   // Adapt the graph limits to the screen resolution
@@ -94,6 +106,16 @@ export class Graph {
     this.adaptXLimits((this.maxX - this.minX) * factor);
     this.adaptYLimits((this.maxY - this.minY) * factor);
     this.initRootComponents();
+  }
+
+  // Convert coordinate in graph space to HTML page space (in pixel)
+  convertGraph2Page([x, y]: Vector2): Vector2 {
+    if (this.prevWidth === -1 || this.prevHeight === -1 || this.resolutionFactor === -1) {
+      return;
+    }
+    const X = (x - this.minX) / (this.maxX - this.minX) * this.prevWidth * this.resolutionFactor;
+    const Y = (y - this.maxY) / (this.minY - this.maxY) * this.prevHeight * this.resolutionFactor;
+    return [X, Y];
   }
 
   getRealRoots(): number[] {

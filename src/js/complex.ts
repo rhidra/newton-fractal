@@ -1,3 +1,5 @@
+import { Vector2 } from "./utils";
+
 export class Complex {
   real;
   imag;
@@ -13,5 +15,9 @@ export class Complex {
 
   get y() {
     return this.imag;
+  }
+
+  get vec() {
+    return [this.real, this.imag] as Vector2;
   }
 }
