@@ -52,15 +52,15 @@ vec3 findRootColor(vec2 p) {
     if (t < d) {
       d = t;
       if (i == 0) {
-        color = vec3(1., 0., 0.);
+        color = vec3(68., 1., 81.)/255.;
       } else if (i == 1) {
-        color = vec3(0., 1., 0.);
+        color = vec3(41., 170., 200.)/255.;
       } else if (i == 2) {
-        color = vec3(0., 0., 1.);
+        color = vec3(94., 201., 103.)/255.;
       } else if (i == 3) {
-        color = vec3(1., 1., 0.);
+        color = vec3(60., 82., 135.)/255.;
       } else if (i == 4) {
-        color = vec3(0., 1., 1.);
+        color = vec3(32., 144., 138.)/255.;
       } else if (i == 5) {
         color = vec3(1., 0., 1.);
       } else if (i == 6) {
@@ -103,18 +103,20 @@ void main() {
   }
 
   vec3 color = vec3(0.);
+  float t = 0.;
 
   // Color depending on the root
-  // color = findRootColor(sol);
+  color = findRootColor(sol);
 
   // Distance of the final solution, good with 10 iterations
-  // color += vec3(length(f(sol))*100.);
+  // t = length(f(sol)) * 100.;
 
   // Number of steps to converge
-  float t = steps/float(MAX_ITERATIONS);
-  // color = mix(vec3(1., .97647, .93725), vec3(.60392, .031373, .129412), t);
+  // float t = steps/float(MAX_ITERATIONS);
 
-  color = mix(vec3(.000686, 0., .1454901), vec3(.984313, .784313, .5333333), t);
+  // color = vec3(t);
+  // color = mix(vec3(1., .97647, .93725), vec3(.60392, .031373, .129412), t);
+  // color = mix(vec3(.000686, 0., .1454901), vec3(.984313, .784313, .5333333), t);
 
   // Display the function
   // vec2 res = df(p);
