@@ -10,7 +10,7 @@ export class Controller {
   nav;
   renderType = RenderType.NONE;
   quality = Quality.HIGH;
-  iterations = 1;
+  iterations = 20;
   qualityCb: (q: Quality) => void;
   iterCb: (i: number) => void;
   addRootCb: () => void;
