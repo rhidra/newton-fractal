@@ -1,5 +1,7 @@
 export enum RenderType {
-  NONE="none",
+  ROOT="root", DISTANCE="distance", 
+  STEPS_1="steps1", STEPS_2="steps2", STEPS_3="steps3",
+  FUNCTION="function",
 }
 
 export enum Quality {
@@ -8,13 +10,14 @@ export enum Quality {
 
 export class Controller {
   nav;
-  renderType = RenderType.NONE;
+  renderType = RenderType.ROOT;
   quality = Quality.HIGH;
   iterations = 20;
   qualityCb: (q: Quality) => void;
   iterCb: (i: number) => void;
   addRootCb: () => void;
   removeRootCb: () => void;
+  renderTypeCb: (type: RenderType) => void;
 
 
   constructor() {
@@ -27,13 +30,13 @@ export class Controller {
       .addEventListener('click', () => this.nav.classList.add('visible'));
 
     // Post processing effect
-    // const radiosRenderType = document.querySelectorAll<HTMLInputElement>('input[type="radio"][name="renderType"]');
-    // radiosRenderType.forEach(radio => {
-    //   radio.addEventListener('change', (e: any) => this.handleChangeRenderType(e.target.value));
-    //   if (radio.checked) {
-    //     this.handleChangeRenderType(radio.value as RenderType);
-    //   }
-    // });
+    const radiosRenderType = document.querySelectorAll<HTMLInputElement>('input[type="radio"][name="renderType"]');
+    radiosRenderType.forEach(radio => {
+      radio.addEventListener('change', (e: any) => this.handleChangeRenderType(e.target.value));
+      if (radio.checked) {
+        this.handleChangeRenderType(radio.value as RenderType);
+      }
+    });
 
     // Roots buttons
     document.querySelector<HTMLButtonElement>('button#add-root')
@@ -59,6 +62,7 @@ export class Controller {
 
   handleChangeRenderType(type: RenderType) {
     this.renderType = type;
+    this.renderTypeCb ? this.renderTypeCb(type) : null;
   }
 
   handleChangeQuality(type: Quality) {
@@ -86,6 +90,7 @@ export class Controller {
   onAddRoot(f: any) { this.addRootCb = f; }
   onRemoveRoot(f: any) { this.removeRootCb = f; }
   onChangeIterations(f: any) { this.iterCb = f; }
+  onChangeRenderType(f: any) { this.renderTypeCb = f; }
 }
 
 export function initControlPanel() {

@@ -10,6 +10,7 @@ uniform float rootsReal[10];
 uniform float rootsImag[10];
 
 @const int MAX_ITERATIONS
+@const int RENDER_TYPE
 
 vec2 cprod(vec2 a, vec2 b) { return vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x); }
 vec2 cdivide(vec2 a, vec2 b) { return vec2(((a.x*b.x+a.y*b.y)/(b.x*b.x+b.y*b.y)),((a.y*b.x-a.x*b.y)/(b.x*b.x+b.y*b.y))); }
@@ -102,27 +103,33 @@ void main() {
     }
   }
 
-  vec3 color = vec3(0.);
+  vec3 color = vec3(1., 0., 0.);
   float t = 0.;
 
-  // Color depending on the root
-  color = findRootColor(sol);
-
-  // Distance of the final solution, good with 10 iterations
-  // t = length(f(sol)) * 100.;
-
-  // Number of steps to converge
-  // float t = steps/float(MAX_ITERATIONS);
-
-  // color = vec3(t);
-  // color = mix(vec3(1., .97647, .93725), vec3(.60392, .031373, .129412), t);
-  // color = mix(vec3(.000686, 0., .1454901), vec3(.984313, .784313, .5333333), t);
-
-  // Display the function
-  // vec2 res = df(p);
-  // float a = (atan(res.y, res.x)/2.*3.1415)+.5;
-  // color = hsb2rgb(vec3(a, 1., length(res)));
-
+  if (RENDER_TYPE == 0) {
+    // Color depending on the root
+    color = findRootColor(sol);
+  } else if (RENDER_TYPE == 1) {
+    // Distance of the final solution, good with 10 iterations
+    t = length(f(sol)) * 100.;
+    color = vec3(t);
+  } else if (RENDER_TYPE == 2) {
+    // Number of steps to converge
+    t = steps/float(MAX_ITERATIONS);
+    color = vec3(t);
+  } else if (RENDER_TYPE == 3) {
+    t = steps/float(MAX_ITERATIONS);
+    color = mix(vec3(1., .97647, .93725), vec3(.60392, .031373, .129412), t);
+  } else if (RENDER_TYPE == 4) {
+    t = steps/float(MAX_ITERATIONS);
+    color = mix(vec3(.000686, 0., .1454901), vec3(.984313, .784313, .5333333), t);
+  } else if (RENDER_TYPE == 5) {
+    // Display the function
+    vec2 res = f(p);
+    float a = (atan(res.y, res.x)/2.*3.1415)+.5;
+    color = hsb2rgb(vec3(a, 1., length(res)));
+  }
+  
   // Draw axis lines
   float axisLine = 1. - step(.000001*resolution.x*(limits[1]-limits[0]), length(p.x));
   axisLine += 1. - step(.000001*resolution.y*(limits[3]-limits[2]), length(p.y));

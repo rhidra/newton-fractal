@@ -20,6 +20,16 @@ function resolutionFactor(controller: Controller) {
   }[controller.quality];
 }
 
+// Render type map in the shader
+const renderType = {
+  'root': 0,
+  'distance': 1,
+  'steps1': 2,
+  'steps2': 3,
+  'steps3': 4,
+  'function': 5,
+};
+
 const graph = new Graph();
 
 export function initSimulation(listener: MouseListener, controller: Controller) {
@@ -77,6 +87,7 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
 
   controller.onChangeQuality(() => initSimulation(listener, controller));
   controller.onChangeIterations(() => updateShaders = true);
+  controller.onChangeRenderType(() => updateShaders = true);
   controller.onAddRoot(() => {
     graph.addRoot();
     updateShaders = true;
@@ -90,9 +101,11 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
     // Programs/Shaders setup
     if (updateShaders) {
       updateShaders = false;
+      
       const src = frag.sourceCode
-        .replace('$0$', graph.rootsCount)
-        .replace('$1$', controller.iterations);
+        .replace(frag.consts.ROOTS_COUNT.variableName, graph.rootsCount)
+        .replace(frag.consts.RENDER_TYPE.variableName, renderType[controller.renderType])
+        .replace(frag.consts.MAX_ITERATIONS.variableName, controller.iterations);
       prog = twgl.createProgramInfo(gl, [vert.sourceCode, src]);
     }
 
