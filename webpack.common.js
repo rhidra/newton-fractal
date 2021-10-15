@@ -48,8 +48,8 @@ module.exports = {
       template: path.resolve(__dirname, "./src/templates/index.html")
     }),
     new MiniCssExtractPlugin({filename: "styles.[hash].css"}),
-    // new CnameWebpackPlugin({
-    //   domain: 'newton.remyhidra.dev',
-    // }),
+    new CnameWebpackPlugin({
+      domain: 'newton.remyhidra.dev',
+    }),
   ]
 };
