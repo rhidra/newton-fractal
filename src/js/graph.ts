@@ -98,14 +98,18 @@ export class Graph {
   // Change limits to be the new length
   adaptXLimits(newLength: number) {
     const oldLength = this.maxX - this.minX;
-    this.minX += (oldLength - newLength) / 2;
-    this.maxX -= (oldLength - newLength) / 2;
+    const min = this.minX + (oldLength - newLength) / 2;
+    const max = this.maxX - (oldLength - newLength) / 2;
+    this.minX = Math.min(min, max);
+    this.maxX = Math.max(min, max);
   }
 
   adaptYLimits(newLength: number) {
     const oldLength = this.maxY - this.minY;
-    this.minY += (oldLength - newLength) / 2;
-    this.maxY -= (oldLength - newLength) / 2;
+    const min = this.minY + (oldLength - newLength) / 2;
+    const max = this.maxY - (oldLength - newLength) / 2;
+    this.minY = Math.min(min, max);
+    this.maxY = Math.max(min, max);
   }
 
   // Positive to zoom, negative to unzoom
@@ -121,6 +125,7 @@ export class Graph {
     this.adaptXLimits((this.maxX - this.minX) * factor);
     this.adaptYLimits((this.maxY - this.minY) * factor);
     this.initRootComponents();
+    console.log(this.minX, this.maxX)
   }
 
   // Convert coordinate in graph space to HTML page space (in pixel)
