@@ -11,6 +11,7 @@ uniform float rootsImag[10];
 
 @const int MAX_ITERATIONS
 @const int RENDER_TYPE
+@const int RENDER_GRID
 
 vec2 cprod(vec2 a, vec2 b) { return vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x); }
 vec2 cdivide(vec2 a, vec2 b) { return vec2(((a.x*b.x+a.y*b.y)/(b.x*b.x+b.y*b.y)),((a.y*b.x-a.x*b.y)/(b.x*b.x+b.y*b.y))); }
@@ -131,9 +132,19 @@ void main() {
   }
   
   // Draw axis lines
-  float axisLine = 1. - step(.000001*resolution.x*(limits[1]-limits[0]), length(p.x));
-  axisLine += 1. - step(.000001*resolution.y*(limits[3]-limits[2]), length(p.y));
-  color = color * (1. - axisLine) + vec3(1., 1., 1.) * axisLine;
+  if (RENDER_GRID == 1) {
+    float mainAxisLine = 0.;
+    mainAxisLine += 1. - step(1., length(p.x) * resolution.x / (limits[1]-limits[0]));
+    mainAxisLine += 1. - step(1., length(p.y) * resolution.y / (limits[3]-limits[2]));
+    mainAxisLine = clamp(mainAxisLine, 0., 1.);
+    float axisLines = 0.;
+    axisLines += 1. - step(1., mod(length(p.x), 1.) * resolution.x / (limits[1] - limits[0]));
+    axisLines += 1. - step(1., mod(length(p.y), 1.) * resolution.y / (limits[3] - limits[2]));
+    axisLines = clamp(axisLines, 0., 1.);
+    axisLines -= mainAxisLine;
+    color = mix(color, vec3(1.), mainAxisLine);
+    color = mix(color, vec3( 255.)/255., .3 * axisLines);
+  }
 
   gl_FragColor = vec4(color, 1.);
 }

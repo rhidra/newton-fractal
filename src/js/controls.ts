@@ -10,7 +10,9 @@ export enum Quality {
 
 export class Controller {
   nav;
-  renderType = RenderType.ROOT;
+  _renderType = RenderType.ROOT;
+  renderGrid = true;
+  showFunction = false;
   quality = Quality.HIGH;
   iterations = 20;
   qualityCb: (q: Quality) => void;
@@ -18,7 +20,7 @@ export class Controller {
   addRootCb: () => void;
   removeRootCb: () => void;
   renderTypeCb: (type: RenderType) => void;
-
+  renderGridCb: (b: boolean) => void;
 
   constructor() {
     this.nav = document.querySelector<HTMLElement>('nav');
@@ -28,15 +30,6 @@ export class Controller {
       .addEventListener('click', () => this.nav.classList.remove('visible'));
     document.querySelector<HTMLButtonElement>('#open')
       .addEventListener('click', () => this.nav.classList.add('visible'));
-
-    // Post processing effect
-    const radiosRenderType = document.querySelectorAll<HTMLInputElement>('input[type="radio"][name="renderType"]');
-    radiosRenderType.forEach(radio => {
-      radio.addEventListener('change', (e: any) => this.handleChangeRenderType(e.target.value));
-      if (radio.checked) {
-        this.handleChangeRenderType(radio.value as RenderType);
-      }
-    });
 
     // Roots buttons
     document.querySelector<HTMLButtonElement>('button#add-root')
@@ -50,6 +43,21 @@ export class Controller {
     document.querySelector<HTMLButtonElement>('button#remove-iter')
       .addEventListener('click', () => this.handleRemoveIter());
 
+    // Post processing effect
+    const radiosRenderType = document.querySelectorAll<HTMLInputElement>('input[type="radio"][name="renderType"]');
+    radiosRenderType.forEach(radio => {
+      radio.addEventListener('change', (e: any) => this.handleChangeRenderType(e.target.value));
+      if (radio.checked) {
+        this.handleChangeRenderType(radio.value as RenderType);
+      }
+    });
+
+    // Other debug features
+    document.querySelector<HTMLInputElement>('input#grid')
+      .addEventListener('change', (e: any) => this.handleChangeRenderGrid(e.target.checked));
+    document.querySelector<HTMLInputElement>('input#function')
+      .addEventListener('change', (e: any) => this.handleShowFunction(e.target.checked));
+
     // Quality
     const radiosQuality = document.querySelectorAll<HTMLInputElement>('input[type="radio"][name="quality"]');
     radiosQuality.forEach(radio => {
@@ -61,15 +69,27 @@ export class Controller {
   }
 
   handleChangeRenderType(type: RenderType) {
-    this.renderType = type;
+    this._renderType = type;
     this.renderTypeCb ? this.renderTypeCb(type) : null;
+  }
+
+  get renderType() {
+    return this.showFunction ? RenderType.FUNCTION : this._renderType;
+  }
+
+  handleChangeRenderGrid(render: boolean) {
+    this.renderGrid = render;
+    this.renderGridCb ? this.renderGridCb(render) : null;
+  }
+
+  handleShowFunction(show: boolean) {
+    this.showFunction = show;
+    this.renderTypeCb ? this.renderTypeCb(show ? RenderType.FUNCTION : this._renderType) : null;
   }
 
   handleChangeQuality(type: Quality) {
     this.quality = type;
-    if (this.qualityCb) {
-      this.qualityCb(this.quality);
-    }
+    this.qualityCb ? this.qualityCb(this.quality) : null;
   }
 
   handleAddRoot() { this.addRootCb ? this.addRootCb() : null; }
@@ -91,6 +111,7 @@ export class Controller {
   onRemoveRoot(f: any) { this.removeRootCb = f; }
   onChangeIterations(f: any) { this.iterCb = f; }
   onChangeRenderType(f: any) { this.renderTypeCb = f; }
+  onChangeRenderGrid(f: any) { this.renderGridCb = f; }
 }
 
 export function initControlPanel() {

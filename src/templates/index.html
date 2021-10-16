@@ -43,7 +43,7 @@
   <canvas id="c"></canvas>
   
   <nav>
-    <section>
+    <section class="function">
       <p>Function</p>
       <button type="button" id="add-root">
         Add root
@@ -54,16 +54,16 @@
     </section>
 
     <section>
-      <p>
+      <p class="iterations">
         Iterations
-        <span id="iterations-number">1</span>
+        <span id="iterations-number">20</span>
+        <button type="button" id="add-iter">
+          ＋
+        </button>
+        <button type="button" id="remove-iter">
+          −
+        </button>
       </p>
-      <button type="button" id="add-iter">
-        Add an iteration
-      </button>
-      <button type="button" id="remove-iter">
-        Remove an iteration
-      </button>
     </section>
 
     <section class="radio">
@@ -88,9 +88,17 @@
         <input type="radio" value="steps3" id="steps3" name="renderType">
         <label for="steps3">Steps 3</label>
       </div>
+    </section>
+
+    <section class="checkbox">
+      <p>Other</p>
       <div>
-        <input type="radio" value="function" id="function" name="renderType">
-        <label for="function">Function</label>
+        <input type="checkbox" value="grid" id="grid" name="grid" checked>
+        <label for="grid">Show grid</label>
+      </div>
+      <div>
+        <input type="checkbox" value="function" id="function" name="function">
+        <label for="function">Show function</label>
       </div>
     </section>
 

@@ -13,15 +13,31 @@ nav {
   padding: 1rem 4rem 1rem 2rem;
   padding-right: 2rem;
   box-shadow: 1px 1px 10px black;
-  max-height: 80%;
+  max-height: 90%;
   overflow-y: auto;
   transition: transform ease-out 200ms;
   top: 0;
   left: 0;
+  min-width: 220px;
   transform: translateX(-110%);
   
   &.visible {
     transform: translateX(0);
+  }
+
+  button {
+    color: $white;
+    background: none;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    &:hover {
+      background-color: rgba(#2d3b49, .6);
+    }
+    &:active {
+      background-color: rgba(#2d3b49, 1);
+    }
   }
 
   section {
@@ -35,7 +51,7 @@ nav {
     }
   }
 
-  section {
+  section.radio, section.function, section.checkbox {
     input { display: none; }
 
     label, button { 
@@ -47,9 +63,6 @@ nav {
       padding-left: 2rem;
       font-size: 1rem;
       color: $white;
-      background: none;
-      outline: none;
-      border: none;
       transition: color linear 150ms, background linear 150ms;
       &:hover {
         background-color: rgba(#2d3b49, .6);
@@ -66,11 +79,28 @@ nav {
       }
     }
 
+    &.checkbox label::before {
+      content: "✔";
+    }
+
     input:checked + label {
       color: $red;
       &:before {
         transform: translateY(-2px) scale(1);
       }
+    }
+  }
+
+  p.iterations {
+    #iterations-number {
+      color: $white;
+      margin-left: .5rem;
+    }
+
+    button {
+      padding: .8rem;
+      font-size: 1.2rem;
+      font-weight: bold;
     }
   }
 
