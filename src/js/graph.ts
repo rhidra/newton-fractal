@@ -125,7 +125,6 @@ export class Graph {
     this.adaptXLimits((this.maxX - this.minX) * factor);
     this.adaptYLimits((this.maxY - this.minY) * factor);
     this.initRootComponents();
-    console.log(this.minX, this.maxX)
   }
 
   // Convert coordinate in graph space to HTML page space (in pixel)
