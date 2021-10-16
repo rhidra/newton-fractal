@@ -88,7 +88,10 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
   controller.onChangeQuality(() => initSimulation(listener, controller));
   controller.onChangeIterations(() => updateShaders = true);
   controller.onChangeRenderType(() => updateShaders = true);
-  controller.onChangeRenderGrid(() => updateShaders = true);
+  controller.onChangeRenderGrid((show: boolean) => {
+    document.querySelector('body').className = show ? "show-grid" : '';
+    updateShaders = true;
+  });
   controller.onAddRoot(() => {
     graph.addRoot();
     updateShaders = true;
