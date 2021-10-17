@@ -91,14 +91,16 @@ nav {
     }
   }
 
-  p.iterations {
+  section.iterations {
+    margin-top: -.25rem;
+
     #iterations-number {
       color: $white;
       margin-left: .5rem;
     }
 
     button {
-      padding: .8rem;
+      padding: .5rem .8rem;
       font-size: 1.2rem;
       font-weight: bold;
     }
