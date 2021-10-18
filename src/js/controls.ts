@@ -21,6 +21,7 @@ export class Controller {
   removeRootCb: () => void;
   renderTypeCb: (type: RenderType) => void;
   renderGridCb: (b: boolean) => void;
+  randomCb: () => void;
 
   constructor() {
     this.nav = document.querySelector<HTMLElement>('nav');
@@ -53,6 +54,8 @@ export class Controller {
     });
 
     // Other debug features
+    document.querySelector<HTMLInputElement>('button#random')
+      .addEventListener('click', () => this.handleChangeRandom());
     document.querySelector<HTMLInputElement>('input#grid')
       .addEventListener('change', (e: any) => this.handleChangeRenderGrid(e.target.checked));
     document.querySelector<HTMLInputElement>('input#function')
@@ -87,6 +90,10 @@ export class Controller {
     this.renderTypeCb ? this.renderTypeCb(show ? RenderType.FUNCTION : this._renderType) : null;
   }
 
+  handleChangeRandom() {
+    this.randomCb ? this.randomCb() : null;
+  }
+
   handleChangeQuality(type: Quality) {
     this.quality = type;
     this.qualityCb ? this.qualityCb(this.quality) : null;
@@ -112,6 +119,7 @@ export class Controller {
   onChangeIterations(f: any) { this.iterCb = f; }
   onChangeRenderType(f: any) { this.renderTypeCb = f; }
   onChangeRenderGrid(f: any) { this.renderGridCb = f; }
+  onChangeRandom(f: any) { this.randomCb = f; }
 }
 
 export function initControlPanel() {

@@ -1,5 +1,5 @@
 import { Complex } from "./complex";
-import { Vector2 } from "./utils";
+import { randomVectorFields, Vector2 } from "./utils";
 
 /**
  * Graph
@@ -21,6 +21,8 @@ export class Graph {
 
   prevWidth = -1; prevHeight = -1; resolutionFactor = -1;
 
+  isRandom = false;
+
   initRootComponents() {
     if (this.prevWidth === -1 || this.prevHeight === -1 || this.resolutionFactor === -1) {
       return;
@@ -39,6 +41,14 @@ export class Graph {
     });
   }
 
+  generateRandomConfig() {
+    const maxRoot = this.roots.reduce((m, r) => r.radius > m.radius ? r : m);
+    this.roots.forEach((root, rootIdx) => {
+      const c = Complex.fromAngle(maxRoot.radius * .6 * Math.random() + maxRoot.radius * .6, Math.random() * 2*3.1415);
+      this.moveRootTo(rootIdx, c);
+    });
+  }
+
   // Moves the graph limits according to a direction vector, with components [0,1]
   moveGraphAlong(dir: Vector2) {
     this.maxX -= dir[0] * (this.maxX - this.minX);
@@ -49,12 +59,23 @@ export class Graph {
   }
 
   // Move a root along a direction vector in page space [0, 1]
-  moveRoot(rootIdx: number, dir: Vector2) {
-    if (rootIdx < 0 || rootIdx >= this.rootsCount) {
-      return;
-    }
+  moveRootAlong(rootIdx: number, dir: Vector2) {
+    if (rootIdx < 0 || rootIdx >= this.rootsCount) { return; }
     this.roots[rootIdx].real += dir[0] * (this.maxX - this.minX);
     this.roots[rootIdx].imag += dir[1] * (this.maxY - this.minY);
+    this.updateRootHTML(rootIdx);
+  }
+
+  // Move a root exactly at the coordinate of the point, in graph space
+  moveRootTo(rootIdx: number, pt: Complex) {
+    if (rootIdx < 0 || rootIdx >= this.rootsCount) { return; }
+    this.roots[rootIdx].real = pt.x;
+    this.roots[rootIdx].imag = pt.y;
+    this.updateRootHTML(rootIdx);
+  }
+
+  // Update the HTML element of a root, useful when moving a root
+  updateRootHTML(rootIdx: number) {
     const rootEl = document.querySelector(`.root.root-${rootIdx}`) as HTMLDivElement;
     const [x, y] = this.convertGraph2Page(this.roots[rootIdx].vec);
     rootEl.style.top = `${y}px`;

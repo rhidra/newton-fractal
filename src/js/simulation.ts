@@ -76,7 +76,7 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
     if (isDragging === 'graph') {
       graph.moveGraphAlong(force);
     } else {
-      graph.moveRoot(isDragging, force);
+      graph.moveRootAlong(isDragging, force);
     }
   });
   listener.onMouseDragStop(() => isDragging = false);
@@ -88,6 +88,7 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
   controller.onChangeQuality(() => initSimulation(listener, controller));
   controller.onChangeIterations(() => updateShaders = true);
   controller.onChangeRenderType(() => updateShaders = true);
+  controller.onChangeRandom(() => graph.generateRandomConfig());
   controller.onChangeRenderGrid((show: boolean) => {
     document.querySelector('body').className = show ? "show-grid" : '';
     updateShaders = true;
@@ -101,7 +102,13 @@ export function initSimulation(listener: MouseListener, controller: Controller) 
     updateShaders = true;
   });
 
+  let lastTime = Date.now() / 1000;
+
   function render(time: number) {
+    const now = time / 1000;
+    const dt = (now - lastTime) * 1;
+    lastTime = now;
+
     // Programs/Shaders setup
     if (updateShaders) {
       updateShaders = false;
